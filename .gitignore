@@ -1,0 +1,8 @@
+
+.eggs/
+build/
+dist/
+__pycache__/
+cupra*.json
+www/
+.mypy_cache/
