@@ -1,0 +1,68 @@
+{
+  "title": "Get EUDA Data",
+  "config": {
+    "step": {
+      "user": {
+        "title": "Get_EUDA_Data Configuration",
+        "description": "Fill in your account information.",
+        "data": {
+          "brand": "[%key:common::config_flow::data::brand%]",
+          "username": "[%key:common::config_flow::data::email%]",
+          "password": "[%key:common::config_flow::data::password%]"
+        }
+      },
+      "vehicle": {
+        "title": "Vehicle Settings",
+        "description": "The following vehicle(s) was found. Please select the vehicle you wish to monitor and it's settings.\n",
+        "data": {
+          "vehicle": "VIN Number"
+        }
+      },
+      "monitoring": {
+        "title": "Monitoring Settings",
+        "description": "Specify additional monitoring settings.",
+        "data": {
+          "resources": "Resources to monitor.",
+          "update_interval": "Poll frequency (minutes).",
+          "debug": "Full API debug logging (requires debug logging enabled in configuration.yaml)",
+          "log_prefix": "Short log prefix for this Get EUDA Data instance (e.g. 1)"
+        }
+      },
+      "reauth_confirm": {
+        "description": "Re-authenticate with your Cupra/Seat account.\nMake sure to accept any new EULA in the Cupra/Seat portal before proceeding.",
+        "data": {
+          "brand": "[%key:common::config_flow::data::brand%]",
+          "email": "[%key:common::config_flow::data::email%]",
+          "password": "[%key:common::config_flow::data::password%]"
+        }
+      }
+    },
+    "abort": {
+      "already_configured": "[%key:common::config_flow::abort::already_configured_account%]",
+      "reauth_successful": "[%key:common::config_flow::abort::reauth_successful%]"
+    },
+    "error": {
+      "cannot_connect": "Could not login to EU Data Act portal, please check your credentials and verify that the service is working",
+      "cannot_update": "Could not query update from EU Data Act portal",
+      "unknown": "[%key:common::config_flow::error::unknown%]"
+    },
+    "progress": {
+      "task_login": "Logging in to EU Data Act portal",
+      "task_update": "Fetching vehicles"
+    }
+  },
+  "options": {
+    "step": {
+      "user": {
+        "title": "Options for Get EUDA Data",
+        "description": "Configure update interval",
+        "data": {
+          "update_interval": "Poll frequency (minutes)",
+          "resources": "Resources to monitor.",
+          "debug": "Full API debug logging (requires debug logging enabled in configuration.yaml)",
+          "log_prefix": "Short log prefix for this Get EUDA Data instance (e.g. 1)"
+        }
+      }
+    }
+  }
+}
