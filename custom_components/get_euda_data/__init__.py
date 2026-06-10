@@ -391,10 +391,13 @@ class PyCupraEntity(Entity):
             "charging_time_left",
             "charging_estimated_end_time",
         ]:
-            return icon_for_battery_level(
-                battery_level=self.data.instrument(self.vin, "sensor", "battery_level").state, 
-                charging=self.data.instrument(self.vin, "binary_sensor", "charging_state").state
-            )
+            battery_level_instrument = self.data.instrument(self.vin, "sensor", "battery_level") 
+            charging_instrument = self.data.instrument(self.vin, "binary_sensor", "charging_state")
+            if battery_level_instrument is not None and charging_instrument is not None:
+                return icon_for_battery_level(
+                    battery_level=battery_level_instrument.state, 
+                    charging=charging_instrument.state
+                )
         # if self.instrument.attr in ["climatisation_time_left", "climatisation_estimated_end_time"]:
         #    if self.vehicle.electric_climatisation:
         #        return "mdi:radiator"

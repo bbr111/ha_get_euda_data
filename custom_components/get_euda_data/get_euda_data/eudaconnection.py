@@ -30,6 +30,8 @@ from .exceptions import (
     PyCupraLoginFailedException,
     PyCupraInvalidRequestException,
     PyCupraMarketingConsentException,
+    # PyCupraRequestInProgressException,
+    # PyCupraServiceUnavailable
 )
 
 from aiohttp import ClientSession, ClientTimeout
@@ -39,6 +41,8 @@ from http import cookies
 from .const import (
     AUTH_OIDCONFIG,
     EUDA_CLIENT_LIST,
+    # EUDA_AUTH_OIDC,
+    # EUDA_AUTH_ISSUER,
     EUDA_HEADERS_AUTH,
     EUDA_HEADERS_SESSION,
     EUDA_BASE_URL,
@@ -1072,12 +1076,12 @@ class EUDAConnection:
             self._session_headers.pop("filename")
             return fileContent
         except Exception:
-            self._LOGGER.debug("Could not fetch data file.")
+            self._LOGGER.debug(self.anonymise(f"Could not fetch data file {filename}."))
             if self._session_headers.get("type", None) is not None:
                 self._session_headers.pop("type")
             if self._session_headers.get("filename", None) is not None:
                 self._session_headers.pop("filename")
-            raise PyCupraInvalidRequestException("Unable to download data file")
+            #raise PyCupraInvalidRequestException("Unable to download data file")
         return bytes(0)
 
     def writeDataFile(self, fileNameWithPath: str, fileContent) -> bool:
@@ -1456,9 +1460,9 @@ class EUDAConnection:
                             )
                     # tripElement['tripEnd']=timeStamp
                     if len(tripElement) < 6:
-                        self._LOGGER.warning(
+                        self._LOGGER.debug(
                             self.anonymise(
-                                f"tripElement has for vehicle {vehicle.vin} less entries as expected. {tripElement}"
+                                f"tripElement for vehicle {vehicle.vin} has less entries than expected. Only {len(tripElement)}. {tripElement}"
                             )
                         )
                     else:
@@ -1639,10 +1643,7 @@ class EUDAConnection:
                 self._LOGGER.debug(f"In getData. Number of vehicles is zero.")
 
             for vehicle in self.vehicles:
-                try:
-                    await self.getDataForOneVehicle(vehicle)
-                except:
-                    await self.getDataForOneVehicle(vehicle)
+                await self.getDataForOneVehicle(vehicle)
             return True
         except Exception as e:
             raise PyCupraException(f"getData() encountered an error. Error: {e}")
@@ -1671,8 +1672,8 @@ class EUDAConnection:
             identifier_partial = ""
             counter = 0
             while counter <5 and identifier_partial == "":
-                await asyncio.sleep(4)
                 if counter>0:
+                    await asyncio.sleep(4)
                     self._LOGGER.debug(f"Trying to read information about data cluster of type 'partial' again.")
                 data = await self.getDatacluster(EUDA_BASE_URL, vehicle.vin, "partial")
                 if data == {}:
@@ -1696,8 +1697,8 @@ class EUDAConnection:
             counter = 0
             fileList = {}
             while counter <5 and fileList.get("availableDataFiles", []) == []:
-                await asyncio.sleep(2)
                 if counter>0:
+                    await asyncio.sleep(2)
                     self._LOGGER.debug(f"Trying to read list of available files again.")
                 fileList = await self.getListOfAvailableFiles(
                     EUDA_BASE_URL, vehicle.vin, identifier_partial, "partial"
@@ -1718,13 +1719,20 @@ class EUDAConnection:
                             # self._LOGGER.debug(f"File {fileName} is already present in 'processed' folder. Nothing to do anymore.")
                             pass
                         else:
-                            fileContent = await self.getOneDatafile(
-                                fileName,
-                                EUDA_BASE_URL,
-                                vehicle.vin,
-                                identifier_partial,
-                                "partial",
-                            )
+                            counter = 0
+                            fileContent = b''
+                            while counter <3 and len(fileContent) == 0:
+                                if counter>0:
+                                    await asyncio.sleep(1)
+                                    self._LOGGER.debug(self.anonymise(f"Trying to reread file {fileName} again."))
+                                fileContent = await self.getOneDatafile(
+                                    fileName,
+                                    EUDA_BASE_URL,
+                                    vehicle.vin,
+                                    identifier_partial,
+                                    "partial",
+                                )
+                                counter = counter + 1
                             if len(fileContent) > 0:
                                 loop = asyncio.get_running_loop()
                                 if fileName.find("_error") > 0:
@@ -1753,8 +1761,8 @@ class EUDAConnection:
                                         fileWithPath,
                                         fileContent,
                                     )
-                            self._LOGGER.debug(
-                                self.anonymise(f"Downloaded new file {fileName}.")
+                                self._LOGGER.debug(
+                                    self.anonymise(f"Downloaded new file {fileName}.")
                             )
                     else:
                         self._LOGGER.error(
