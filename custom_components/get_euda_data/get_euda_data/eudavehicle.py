@@ -37,6 +37,10 @@ class EUDAVehicle:
         self._dashboard = None
         self._states = {}
         self.currentData = {}
+        self._defined_EUDA_keys = set()
+        for elem in EUDA_DATA_DICT.values():
+            if elem.get("key","") != "":
+                self._defined_EUDA_keys.add(elem.get("key",""))
 
     def dashboard(self, **config):
         """Returns dashboard, creates new if none exist."""
@@ -109,15 +113,21 @@ class EUDAVehicle:
                     elif conversion == EUDA_DATA_CONVERSION_INT_INVERT:
                         return -int(element.get("value", "0"))
                     elif conversion == EUDA_DATA_CONVERSION_BOOL:
+                        if element.get("value", "") == "true":
+                            return True
                         if element.get("value", "") == "on":
                             return True
                         if element.get("value", "") == "locked":
+                            return True
+                        if element.get("value", "") == "connected":
                             return True
                         if element.get("value", "") == "charging":
                             return True
                         if element.get("value", "") == "1" and element.get("dataFieldName", "").startswith("parking_brake"):
                             return True
                         if element.get("value", "") == "3" and element.get("dataFieldName", "").startswith("open_state"):
+                            return True
+                        if element.get("value", "") == "3" and "window_lifter" in element.get("dataFieldName", ""):
                             return True
                     elif conversion == EUDA_DATA_CONVERSION_DIVIDE_BY_10:
                         return int(element.get("value", "0")) / 10
@@ -164,12 +174,12 @@ class EUDAVehicle:
         """Return a dictionary of all EUDA data fields found in EUDA files but not defined in EUDA_DATA_DICT."""
         undefinedFields = {}
         for element in self.currentData.get("Data", []):
-            if element.get("dataFieldName", "") not in EUDA_DATA_DICT and element.get("dataFieldName", "") not in EUDA_DATA_NO_SHOW_SET:
+            if element.get("key", "") not in self._defined_EUDA_keys and element.get("key", "") not in EUDA_DATA_NO_SHOW_SET:
                 if element.get("dataFieldName", "") != "":
                     undefinedFields[element.get("dataFieldName", "-dataFieldNameMissing-")] = element.get("value", "")
                 else:
                     undefinedFields[element.get("key", "-dataFieldNameMissing-")] = element.get("value", "")
-        return undefinedFields
+        return dict(sorted(undefinedFields.items()))
 
 def GetModelFromNickName(nickName: str) -> str:
     posSeparator = nickName.find(" ")

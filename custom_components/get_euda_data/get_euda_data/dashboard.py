@@ -80,14 +80,15 @@ class EUDAInstrument:
 
     @property
     def attributes(self):
+        attrs = {}
+        if self.key != "00000000-0000-0000-0000-0000":
+            attrs["EUDA field key"] = self.key
         if self.name.startswith("Last long length"):
             if self.vehicle.isEUDADataFieldSupported(EUDA_LONG_TERM_DATA_START_MILEAGE_KEY):
-                attrs = {}
                 attrs["start mileage"] = self.vehicle.getEUDADataFieldValue(EUDA_LONG_TERM_DATA_START_MILEAGE_KEY, EUDA_DATA_CONVERSION_INT)
                 return attrs
         if self.name.startswith("Last short length"):
             if self.vehicle.isEUDADataFieldSupported(EUDA_SHORT_TERM_DATA_START_MILEAGE_KEY):
-                attrs = {}
                 attrs["start mileage"] = self.vehicle.getEUDADataFieldValue(EUDA_SHORT_TERM_DATA_START_MILEAGE_KEY, EUDA_DATA_CONVERSION_INT)
                 return attrs
         if self.name.startswith("Other fields found"):
@@ -95,10 +96,9 @@ class EUDAInstrument:
             return attrs
         if not self.name.startswith("Last long") and not self.name.startswith("Last short"):
             if self.vehicle.getEUDADataFieldTimestamp(self.key) != "unknown":
-                attrs = {}
                 attrs["time stamp"] = self.vehicle.getEUDADataFieldTimestamp(self.key)
                 return attrs
-        return {}
+        return attrs
 
     @property
     def is_supported(self):
@@ -207,7 +207,7 @@ def create_eudaInstruments():
                 key=dictElem.get("key", None),
                 conversion=dictElem.get("conversion", None),
             )
-        instList.append(sensor)
+            instList.append(sensor)
 
     return instList
 

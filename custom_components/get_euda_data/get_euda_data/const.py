@@ -122,6 +122,15 @@ EUDA_DATA_DICT = {
         "key": "6810b781-e54a-35e8-af98-fcdefb54bac6",
         "conversion": EUDA_DATA_CONVERSION_KELVIN_TO_CELSIUS,
     },
+    "outsideTemperatureIndication": {
+        "attr": "outside_temperature_indication",
+        "name": "Outside temperature indication",
+        "icon": "mdi:thermometer",
+        "unit": "°C",
+        "device_class": "temperature",
+        "key": "b871c390-5325-377d-a91f-ea09bc0eff92",
+        "conversion": EUDA_DATA_CONVERSION_INT,
+    },
     "outdoor_temperature": {
         "attr": "outdoor_temperature",
         "name": "Outdoor temperature",
@@ -149,7 +158,16 @@ EUDA_DATA_DICT = {
         "key": "dc4a4716-2205-352f-802f-8d7d59705c5b",
         "conversion": EUDA_DATA_CONVERSION_FLOAT,
     },
-    "oil_level": {
+    "boardnetBatteryVoltageIndication": {
+        "attr": "boardnet_battery_voltage",
+        "name": "Boardnet battery voltage",
+        "icon": "mdi:battery",
+        "unit": "%",
+        "device_class": "battery",
+        "key": "c5b624db-6a07-3957-9127-98cee0be6c98",
+        "conversion": EUDA_DATA_CONVERSION_FLOAT,
+    },
+    " oil_level_actual_level": {
         "attr": "oil_level",
         "name": "Oil level",
         "icon": "mdi:oil",
@@ -275,6 +293,15 @@ EUDA_DATA_DICT = {
         "key": "1503760b-5570-3001-8ffc-1bb6f464948e",
         "conversion": EUDA_DATA_CONVERSION_INT,
     },
+    "tank_current_level": {
+        "attr": "tank_level",
+        "name": "Tank level",
+        "icon": "mdi:fuel",
+        "unit": "%",
+        #"device_class": "distance",
+        "key": "3ba7c870-d2a7-3383-8a17-e4048a57a583",
+        "conversion": EUDA_DATA_CONVERSION_FLOAT,
+    },
     "cng_gas_level": {
         "attr": "cng_level",
         "name": "Cng level",
@@ -294,8 +321,8 @@ EUDA_DATA_DICT = {
         "conversion": EUDA_DATA_CONVERSION_INT,
     },
     "battery_state_report.soc": {
-        "attr": "battery_level",
-        "name": "Battery level",
+        "attr": "state_of_charge",
+        "name": "State of charge",
         "icon": "mdi:battery",
         "unit": "%",
         "device_class": "battery",
@@ -321,8 +348,8 @@ EUDA_DATA_DICT = {
         "conversion": EUDA_DATA_CONVERSION_INT,
     },
     "mileage_value": {
-        "attr": "distance",
-        "name": "Odometer",
+        "attr": "distance2",
+        "name": "Odometer2",
         "icon": "mdi:speedometer",
         "unit": "km",
         "device_class": "distance",
@@ -406,6 +433,38 @@ EUDA_DATA_DICT = {
         "key": "60c81e02-4825-3aab-8da8-b8b07f251623",
         "conversion": EUDA_DATA_CONVERSION_BOOL,
     },
+     "state_rear_right_door_window_lifter": {
+        "attr": "window_closed_right_back",
+        "name": "Window closed right back",
+        #"icon": "mdi:car-door",
+        "device_class": "window",
+        "key": "3ef13c1d-7e08-3cf4-b501-a8bda80cff78",
+        "conversion": EUDA_DATA_CONVERSION_BOOL,
+    },
+     "state_front_right_door_window_lifter": {
+        "attr": "window_closed_right_front",
+        "name": "Window closed right front",
+        #"icon": "mdi:car-door",
+        "device_class": "window",
+        "key": "5fcf7d27-6b76-3de0-9ce9-f207370cdaff",
+        "conversion": EUDA_DATA_CONVERSION_BOOL,
+    },
+     "state_rear_left_door_window_lifter": {
+        "attr": "window_closed_left_back",
+        "name": "Window closed left back",
+        #"icon": "mdi:car-door",
+        "device_class": "window",
+        "key": "5fb120bb-ab59-38fc-8e03-9ae197c7a1ae",
+        "conversion": EUDA_DATA_CONVERSION_BOOL,
+    },
+     "state_front_left_door_window_lifter": {
+        "attr": "window_closed_left_front",
+        "name": "Window closed left front",
+        #"icon": "mdi:car-door",
+        "device_class": "window",
+        "key": "60a4f436-5534-32f4-b4cc-b5a88a9d4b91",
+        "conversion": EUDA_DATA_CONVERSION_BOOL,
+    },
    "charging_state": {
         "attr": "charging_state",
         "name": "Charging state",
@@ -431,6 +490,24 @@ EUDA_DATA_DICT = {
         #"unit": "km",
         #"device_class": "power",
         "key": "97c7b448-13e7-3266-a6be-7487caf1a354",
+        "conversion": None,
+    },
+   "plug_state": {
+        "attr": "charging_cable_connected",
+        "name": "Charging cable connected",
+        "icon": "mdi:battery",
+        #"unit": "km",
+        "device_class": "plug",
+        "key": "c111830c-f959-30d2-859a-ea996190d864",
+        "conversion": EUDA_DATA_CONVERSION_BOOL,
+    },
+   "external_power_supply_state": {
+        "attr": "external_power_supply_state",
+        "name": "External power supply state",
+        "icon": "mdi:battery",
+        #"unit": "km",
+        #"device_class": "plug",
+        "key": "a56a4e27-7d8d-3434-a746-4736c3b5a496",
         "conversion": None,
     },
     "maintenance_interval_distance_until_inspection": {
@@ -468,6 +545,15 @@ EUDA_DATA_DICT = {
         "device_class": "duration",
         "key": "42b1c47b-e1d1-375f-a76f-32ab0177f03e",
         "conversion": EUDA_DATA_CONVERSION_INT_INVERT,
+    },
+    "inspectionDistance": {
+        "attr": "inspection_distance",
+        "name": "Inspection distance",
+        "icon": "mdi:garage",
+        "unit": "km",
+        "device_class": "distance",
+        "key": "ea58e713-ef44-3150-9303-edfc519dcdc1",
+        "conversion": EUDA_DATA_CONVERSION_INT,
     },
     "energy_contents.maximal_energy_content.physical_value": {
         "attr": "max_energy_content_physical",
@@ -522,7 +608,15 @@ EUDA_DATA_DICT = {
 
 }
 
-EUDA_DATA_NO_SHOW_SET = {
-    "long_term_data_start_mileage",
-    "short_term_data_start_mileage"
-}
+EUDA_DATA_NO_SHOW_SET = (
+    EUDA_LONG_TERM_DATA_START_MILEAGE_KEY,
+    EUDA_SHORT_TERM_DATA_START_MILEAGE_KEY,
+    "0f43f2e7-3556-36a9-8271-a60bc54afad8", # echo
+    "7e35b2a4-8f31-30a7-848d-3af7bb1c5e55", # fuel_level__accuracy
+    "173589ce-e437-3c6e-a0ec-6df704586fd7", # trueness
+    "d7d35c0a-706c-3f28-a61a-c3b002116a25", # tyre_pressure_differential_rear_right
+    "a59fa6dd-c0e8-35af-afc0-1f411c33c78c", # tyre_pressure_differential_rear_left
+    "351e9e10-b831-391e-9fc4-ccacc8cd3eba", # tyre_pressure_differential_spare_tyre
+    "a86e735b-5f04-336a-8dc7-8fb189d02cd2", # tyre_pressure_differential_front_right
+    "69729e19-7b1a-3189-8e11-b4b31ab7601a", # tyre_pressure_differential_front_left
+)
