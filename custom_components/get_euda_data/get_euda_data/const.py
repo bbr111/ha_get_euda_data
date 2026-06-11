@@ -167,7 +167,7 @@ EUDA_DATA_DICT = {
         "key": "f8bbe94d-06e1-3311-bf8f-c0c99cc67d48",
         "conversion": EUDA_DATA_CONVERSION_BOOL,
     },
-    "long_term_average_speed": {
+    "long_term_data_average_speed": {
         "attr": "long_term_average_speed",
         "name": "Last long average speed",
         "icon": "mdi:speedometer",
@@ -176,7 +176,7 @@ EUDA_DATA_DICT = {
         "key": "77838f59-786a-36fa-b1d4-47217a9fb40e",
         "conversion": EUDA_DATA_CONVERSION_INT,
     },
-    "long_term_average_electric_consumption": {
+    "long_term_data_average_electr_engine_consumption": {
         "attr": "long_term_average_electric_consumption",
         "name": "Last long average electric consumption",
         "icon": "mdi:car-battery",
@@ -185,7 +185,7 @@ EUDA_DATA_DICT = {
         "key": "79f1709e-028d-3b3a-936e-bbef63b92969",
         "conversion": EUDA_DATA_CONVERSION_DIVIDE_BY_10,
     },
-    "long_term_average_fuel_consumption": {
+    "long_term_data_average_fuel_consumption": {
         "attr": "long_term_average_fuel_consumption",
         "name": "Last long average fuel consumption",
         "icon": "mdi:fuel",
@@ -194,7 +194,7 @@ EUDA_DATA_DICT = {
         "key": "df531c6f-8897-3236-a760-5975322e7021",
         "conversion": EUDA_DATA_CONVERSION_DIVIDE_BY_10,
     },
-    "long_term_average_gas_consumption": {
+    "long_term_data_average_gas_consumption": {
         "attr": "long_term_average_gas_consumption",
         "name": "Last long average gas consumption",
         "icon": "mdi:storage-tank",
@@ -203,7 +203,7 @@ EUDA_DATA_DICT = {
         "key": "a326ae4c-afe8-3929-bf1a-b95ba7107c2f",
         "conversion": EUDA_DATA_CONVERSION_DIVIDE_BY_10,
     },
-    "long_term_duration": {
+    "long_term_data_travel_time": {
         "attr": "long_term_duration",
         "name": "Last long duration",
         "icon": "mdi:clock",
@@ -212,7 +212,7 @@ EUDA_DATA_DICT = {
         "key": "d2ad181b-511a-37d0-8109-e676e68c86b2",
         "conversion": EUDA_DATA_CONVERSION_INT,
     },
-    "long_term_distance": {
+    "long_term_data_mileage": {
         "attr": "long_term_distance",
         "name": "Last long length",
         "icon": "mdi:map-marker-distance",
@@ -221,7 +221,7 @@ EUDA_DATA_DICT = {
         "key": "f8eba56b-ee3f-3c48-b852-03c9b956053f",
         "conversion": EUDA_DATA_CONVERSION_INT,
     },
-    "short_term_average_electric_consumption": {
+    "short_term_data_average_electr_engine_consumption": {
         "attr": "short_term_average_electric_consumption",
         "name": "Last short average electric consumption",
         "icon": "mdi:car-battery",
@@ -230,7 +230,7 @@ EUDA_DATA_DICT = {
         "key": "3b1bdf91-8e59-333a-93ed-f8e5a980bc96",
         "conversion": EUDA_DATA_CONVERSION_DIVIDE_BY_10,
     },
-    "short_term_average_fuel_consumption": {
+    "short_term_data_average_fuel_consumption": {
         "attr": "short_term_average_fuel_consumption",
         "name": "Last short average fuel consumption",
         "icon": "mdi:fuel",
@@ -239,7 +239,7 @@ EUDA_DATA_DICT = {
         "key": "a0ee824b-9a53-34ee-8107-3ed94684efa7",
         "conversion": EUDA_DATA_CONVERSION_DIVIDE_BY_10,
     },
-    "short_term_average_gas_consumption": {
+    "short_term_data_average_gas_consumption": {
         "attr": "short_term_average_gas_consumption",
         "name": "Last short average gas consumption",
         "icon": "mdi:storage-tank",
@@ -248,7 +248,7 @@ EUDA_DATA_DICT = {
         "key": "bdf31409-b799-3969-8199-e305082aabf2",
         "conversion": EUDA_DATA_CONVERSION_DIVIDE_BY_10,
     },
-    "short_term_duration": {
+    "short_term_data_travel_time": {
         "attr": "short_term_duration",
         "name": "Last short duration",
         "icon": "mdi:clock",
@@ -257,7 +257,7 @@ EUDA_DATA_DICT = {
         "key": "f0890c07-e62e-32dc-ab3b-80431f070b13",
         "conversion": EUDA_DATA_CONVERSION_INT,
     },
-    "short_term_distance": {
+    "short_term_data_mileage": {
         "attr": "short_term_distance",
         "name": "Last short length",
         "icon": "mdi:map-marker-distance",
@@ -496,4 +496,33 @@ EUDA_DATA_DICT = {
         "key": "45df4e5a-c2e3-3588-b917-e572ef5ac213",
         "conversion": EUDA_DATA_CONVERSION_FLOAT,
     },
+    "parking_light_left": { 
+        "attr": "parking_light_left", 
+        "name": "Parking light left", 
+        "icon": "mdi:car-parking-lights", 
+        "device_class": "light", 
+        "key": "c7828009-144b-36e9-af38-2c35e7356c34", 
+        "conversion": EUDA_DATA_CONVERSION_BOOL, 
+    }, 
+    "parking_light_right": { 
+        "attr": "parking_light_right", 
+        "name": "Parking light right", 
+        "icon": "mdi:car-parking-lights", 
+        "device_class": "light", 
+        "key": "0fa69b72-8432-3ef4-a312-cbb2f7861dfc", 
+        "conversion": EUDA_DATA_CONVERSION_BOOL, 
+    }, 
+    "other_fields_found": { 
+        "attr": "other_fields_found", 
+        "name": "Other fields found", 
+        "icon": "mdi:help-circle-outline", 
+        "key": "00000000-0000-0000-0000-0000", 
+        "conversion": None, 
+    }, 
+
+}
+
+EUDA_DATA_NO_SHOW_SET = {
+    "long_term_data_start_mileage",
+    "short_term_data_start_mileage"
 }

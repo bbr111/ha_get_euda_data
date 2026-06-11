@@ -68,6 +68,9 @@ class EUDAInstrument:
 
     @property
     def state(self):
+        if self.key == "00000000-0000-0000-0000-0000":
+            attrs = self.vehicle.getEUDADataAllUndefinedFields()
+            return len(attrs)
         if self.vehicle.isEUDADataFieldSupported(self.key):
             val = self.vehicle.getEUDADataFieldValue(self.key, self.conversion)
             return val
@@ -87,6 +90,9 @@ class EUDAInstrument:
                 attrs = {}
                 attrs["start mileage"] = self.vehicle.getEUDADataFieldValue(EUDA_SHORT_TERM_DATA_START_MILEAGE_KEY, EUDA_DATA_CONVERSION_INT)
                 return attrs
+        if self.name.startswith("Other fields found"):
+            attrs = self.vehicle.getEUDADataAllUndefinedFields()
+            return attrs
         if not self.name.startswith("Last long") and not self.name.startswith("Last short"):
             if self.vehicle.getEUDADataFieldTimestamp(self.key) != "unknown":
                 attrs = {}
@@ -97,6 +103,8 @@ class EUDAInstrument:
     @property
     def is_supported(self):
         try:
+            if self.key == "00000000-0000-0000-0000-0000":
+                return True
             return self.vehicle.isEUDADataFieldSupported(self.key)
         except Exception as error:
             self._LOGGER.error(f"An error occurred when checking if {self.attr} is supported. Error: {error}")

@@ -11,6 +11,8 @@ from .const import (
     EUDA_DATA_CONVERSION_DIVIDE_BY_10,
     EUDA_DATA_CONVERSION_KELVIN_TO_CELSIUS,
     EUDA_DATA_CONVERSION_INT_INVERT,
+    EUDA_DATA_DICT,
+    EUDA_DATA_NO_SHOW_SET,
 )
 
 _LOGGER = logging.getLogger(__name__)
@@ -158,6 +160,16 @@ class EUDAVehicle:
                     return element.get("timestampUtc", "unknown")
         return "unknown"
 
+    def getEUDADataAllUndefinedFields(self) -> dict:
+        """Return a dictionary of all EUDA data fields found in EUDA files but not defined in EUDA_DATA_DICT."""
+        undefinedFields = {}
+        for element in self.currentData.get("Data", []):
+            if element.get("dataFieldName", "") not in EUDA_DATA_DICT and element.get("dataFieldName", "") not in EUDA_DATA_NO_SHOW_SET:
+                if element.get("dataFieldName", "") != "":
+                    undefinedFields[element.get("dataFieldName", "-dataFieldNameMissing-")] = element.get("value", "")
+                else:
+                    undefinedFields[element.get("key", "-dataFieldNameMissing-")] = element.get("value", "")
+        return undefinedFields
 
 def GetModelFromNickName(nickName: str) -> str:
     posSeparator = nickName.find(" ")
