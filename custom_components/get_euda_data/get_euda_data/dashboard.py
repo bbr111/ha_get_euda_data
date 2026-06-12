@@ -71,6 +71,26 @@ class EUDAInstrument:
         if self.key == "00000000-0000-0000-0000-0000":
             attrs = self.vehicle.getEUDADataAllUndefinedFields()
             return len(attrs)
+        if self.key.startswith("10000000-0000") or self.key.startswith("11000000-0000"):
+            if self.key.startswith("10000000-0000"):
+                tripSum = self.vehicle.calcLatestTripSumValues("day")
+            else:
+                tripSum = self.vehicle.calcLatestTripSumValues("month")
+            if self.key.endswith("0000"):
+                return tripSum.get("startMileage", 0)
+            if self.key.endswith("0001"):
+                return tripSum.get("fuelConsumption", 0)/10
+            if self.key.endswith("0002"):
+                return tripSum.get("electricConsumption", 0)/10
+            if self.key.endswith("0003"):
+                return tripSum.get("gasConsumption", 0)/10
+            if self.key.endswith("0004"):
+                return tripSum.get("travelTime", 0)
+            if self.key.endswith("0005"):
+                return tripSum.get("distance", 0)
+            if self.key.endswith("0006"):
+                return tripSum.get("tripEnd", 0)
+            return tripSum
         if self.vehicle.isEUDADataFieldSupported(self.key):
             val = self.vehicle.getEUDADataFieldValue(self.key, self.conversion)
             return val
@@ -104,6 +124,8 @@ class EUDAInstrument:
     def is_supported(self):
         try:
             if self.key == "00000000-0000-0000-0000-0000":
+                return True
+            if self.key.startswith("10000000-0000") or self.key.startswith("11000000-0000"):
                 return True
             return self.vehicle.isEUDADataFieldSupported(self.key)
         except Exception as error:

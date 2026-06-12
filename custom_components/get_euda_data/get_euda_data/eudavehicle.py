@@ -3,6 +3,7 @@
 
 # Extract information from data files downloaded from the EU Data Act portal of Volkswagen group.
 import logging
+from datetime import datetime
 
 from .const import (
     EUDA_DATA_CONVERSION_FLOAT,
@@ -37,6 +38,7 @@ class EUDAVehicle:
         self._dashboard = None
         self._states = {}
         self.currentData = {}
+        self.tripData = {}
         self._defined_EUDA_keys = set()
         for elem in EUDA_DATA_DICT.values():
             if elem.get("key","") != "":
@@ -180,6 +182,45 @@ class EUDAVehicle:
                 else:
                     undefinedFields[element.get("key", "-dataFieldNameMissing-")] = element.get("value", "")
         return dict(sorted(undefinedFields.items()))
+
+    def calcLatestTripSumValues(self, sumType="day") -> str:
+        """Return the calculated latest daily sum values from the trip history."""
+        if True: #try:
+            sumDict = {
+                "startMileage": 1000000,
+                "fuelConsumption": 0,
+                "electricConsumption": 0,
+                "gasConsumption": 0,
+                "travelTime": 0,
+                "distance": 0,
+            }
+            element = self.tripData[list(self.tripData)[-1]]
+            # Set the minTimeStamp
+            latestTripEnd = element.get("tripEnd", datetime.min)
+            if sumType == "month":
+                latestTripEnd = latestTripEnd.replace(day=1)
+            minTimeStamp = datetime.combine(latestTripEnd.date(), datetime.min.time()).astimezone(None)
+            sumDict["tripEnd"] = minTimeStamp
+
+            for element in self.tripData.values():
+                if minTimeStamp <= element.get("tripEnd", ""):
+                    if element.get("startMileage", 1000000) < sumDict["startMileage"]:
+                        sumDict["startMileage"] = element.get("startMileage", 1000000)
+                    sumDict["travelTime"] = sumDict["travelTime"] + element.get("travelTime", 0)
+                    sumDict["distance"] = sumDict["distance"] + element.get("distance", 0)
+                    sumDict["fuelConsumption"] = sumDict["fuelConsumption"] + element.get("fuelConsumption", 0) * element.get("distance", 0)
+                    sumDict["electricConsumption"] = sumDict["electricConsumption"] + element.get("electricConsumption", 0) * element.get("distance", 0)
+                    sumDict["gasConsumption"] = sumDict["gasConsumption"] + element.get("gasConsumption", 0) * element.get("distance", 0)
+            
+            if sumDict["distance"]>0:
+                sumDict["fuelConsumption"] = int(sumDict["fuelConsumption"] / sumDict["distance"] +0.5)
+                sumDict["electricConsumption"] = int(sumDict["electricConsumption"] / sumDict["distance"] +0.5)
+                sumDict["gasConsumption"] = int(sumDict["gasConsumption"] / sumDict["distance"] +0.5)
+            return sumDict
+        #except Exception as error:
+        #    self._LOGGER.warning(f"Failed to calculate latest trip sum values  - {error}")
+        return sumDict
+
 
 def GetModelFromNickName(nickName: str) -> str:
     posSeparator = nickName.find(" ")
