@@ -1231,6 +1231,10 @@ class EUDAConnection:
             for vehicle in self.vehicles:
                 vehicle.currentData = self.currentData.get(vehicle.vin, {})
 
+            # Copy tripData for each vehicle in the vehicle itself
+            for vehicle in self.vehicles:
+                vehicle.tripData = self.tripData.get(vehicle.vin, {})
+
             # Move processed files from 'in_process' folder to 'processed' folder
             loop = asyncio.get_running_loop()
             filesInProcessDir = await loop.run_in_executor(
@@ -1653,7 +1657,7 @@ class EUDAConnection:
         """ "Reads data like file lists and files for one vehicle from the EUDA portal"""
         try:
             # Reading information for data cluster 'all' (although not using it at the moment)
-            await asyncio.sleep(4)
+            await asyncio.sleep(2)
             data = await self.getDatacluster(EUDA_BASE_URL, vehicle.vin, "all")
             if data == {}:
                 self._LOGGER.info(
@@ -1673,7 +1677,7 @@ class EUDAConnection:
             counter = 0
             while counter <5 and identifier_partial == "":
                 if counter>0:
-                    await asyncio.sleep(4)
+                    await asyncio.sleep(2)
                     self._LOGGER.debug(f"Trying to read information about data cluster of type 'partial' again.")
                 data = await self.getDatacluster(EUDA_BASE_URL, vehicle.vin, "partial")
                 if data == {}:

@@ -71,6 +71,26 @@ class EUDAInstrument:
         if self.key == "00000000-0000-0000-0000-0000":
             attrs = self.vehicle.getEUDADataAllUndefinedFields()
             return len(attrs)
+        if self.key.startswith("10000000-0000") or self.key.startswith("11000000-0000"):
+            if self.key.startswith("10000000-0000"):
+                tripSum = self.vehicle.calcLatestTripSumValues("day")
+            else:
+                tripSum = self.vehicle.calcLatestTripSumValues("month")
+            if self.key.endswith("0000"):
+                return tripSum.get("startMileage", 0)
+            if self.key.endswith("0001"):
+                return tripSum.get("fuelConsumption", 0)/10
+            if self.key.endswith("0002"):
+                return tripSum.get("electricConsumption", 0)/10
+            if self.key.endswith("0003"):
+                return tripSum.get("gasConsumption", 0)/10
+            if self.key.endswith("0004"):
+                return tripSum.get("travelTime", 0)
+            if self.key.endswith("0005"):
+                return tripSum.get("distance", 0)
+            if self.key.endswith("0006"):
+                return tripSum.get("tripEnd", 0)
+            return tripSum
         if self.vehicle.isEUDADataFieldSupported(self.key):
             val = self.vehicle.getEUDADataFieldValue(self.key, self.conversion)
             return val
@@ -80,14 +100,15 @@ class EUDAInstrument:
 
     @property
     def attributes(self):
+        attrs = {}
+        if self.key != "00000000-0000-0000-0000-0000":
+            attrs["EUDA field key"] = self.key
         if self.name.startswith("Last long length"):
             if self.vehicle.isEUDADataFieldSupported(EUDA_LONG_TERM_DATA_START_MILEAGE_KEY):
-                attrs = {}
                 attrs["start mileage"] = self.vehicle.getEUDADataFieldValue(EUDA_LONG_TERM_DATA_START_MILEAGE_KEY, EUDA_DATA_CONVERSION_INT)
                 return attrs
         if self.name.startswith("Last short length"):
             if self.vehicle.isEUDADataFieldSupported(EUDA_SHORT_TERM_DATA_START_MILEAGE_KEY):
-                attrs = {}
                 attrs["start mileage"] = self.vehicle.getEUDADataFieldValue(EUDA_SHORT_TERM_DATA_START_MILEAGE_KEY, EUDA_DATA_CONVERSION_INT)
                 return attrs
         if self.name.startswith("Other fields found"):
@@ -95,15 +116,16 @@ class EUDAInstrument:
             return attrs
         if not self.name.startswith("Last long") and not self.name.startswith("Last short"):
             if self.vehicle.getEUDADataFieldTimestamp(self.key) != "unknown":
-                attrs = {}
                 attrs["time stamp"] = self.vehicle.getEUDADataFieldTimestamp(self.key)
                 return attrs
-        return {}
+        return attrs
 
     @property
     def is_supported(self):
         try:
             if self.key == "00000000-0000-0000-0000-0000":
+                return True
+            if self.key.startswith("10000000-0000") or self.key.startswith("11000000-0000"):
                 return True
             return self.vehicle.isEUDADataFieldSupported(self.key)
         except Exception as error:
@@ -207,7 +229,7 @@ def create_eudaInstruments():
                 key=dictElem.get("key", None),
                 conversion=dictElem.get("conversion", None),
             )
-        instList.append(sensor)
+            instList.append(sensor)
 
     return instList
 
